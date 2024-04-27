@@ -10,9 +10,9 @@ import { Link } from '@inertiajs/vue3';
         </a>
 
         <ul class="nav col-md-4 justify-content-end">
-          <li class="nav-item"><Link href="#" class="nav-link px-2 text-body-secondary">Home</Link></li>
-          <li class="nav-item"><Link href="#" class="nav-link px-2 text-body-secondary">Quiz</Link></li>
-          <li class="nav-item"><Link href="#" class="nav-link px-2 text-body-secondary">Questions</Link></li>
+          <li class="nav-item"><Link href="/" class="nav-link px-2 text-body-secondary">Home</Link></li>
+          <li class="nav-item"><Link href="/quiz" class="nav-link px-2 text-body-secondary">Quiz</Link></li>
+          <li class="nav-item"><Link href="/questions" class="nav-link px-2 text-body-secondary">Questions</Link></li>
 
         </ul>
       </footer>

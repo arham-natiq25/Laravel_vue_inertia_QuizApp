@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
@@ -12,7 +13,7 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Questions');
     }
 
     /**
@@ -28,7 +29,7 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $request->all();
     }
 
     /**
