@@ -1,8 +1,13 @@
 <script setup>
 import { router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import Layout from '../Shared/Layout.vue';
 import NewQuestionModal from '../Shared/NewQuestionModal.vue'
+import { computed } from 'vue';
+
+const page = usePage()
+const success  = computed(()=>page.props.flash.success)
 const showNewQuestionModal=ref(false)
 const createdQuestion=ref(null)
 const newAnswers=ref([])
@@ -46,7 +51,13 @@ const submitQuestion = ()=>{
 
    router.post('/questions',{
     question : createdQuestion.value,
-    answer :newAnswers.value
+    answers :newAnswers.value
+   })
+
+   router.on('success',()=>{
+        createdQuestion.value = null,
+        newAnswers.value=[]
+
    })
 }
 
@@ -99,10 +110,13 @@ const answerCount =  ()=>{
         <template #header>
             <h5>Add New Question</h5>
         </template>
+        <template #success>
+            <div v-if="success" class="alert alert-success">{{ success }}</div>
+        </template>
         <template #body>
             <div class="mb-3">
                <form action="" class="mb-2">
-                <label for="question" class="form-label">Qustion</label>
+                <label for="question" class="form-label">Question</label>
                 <input type="text" class="form-control" v-model="createdQuestion" id="question">
                </form>
                <div

@@ -8,11 +8,12 @@ const props = defineProps({
   <Transition name="modal">
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
-        <div class="modal-header">
-          <slot name="header">default header</slot>
-        </div>
+          <div class="modal-header">
+              <slot name="header">default header</slot>
+            </div>
 
-        <div class="modal-body">
+            <div class="modal-body">
+            <slot name="success"></slot>
           <slot name="body">default body</slot>
         </div>
 
