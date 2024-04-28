@@ -8,10 +8,13 @@ import { computed } from 'vue';
 
 const page = usePage()
 const success  = computed(()=>page.props.flash.success)
+const showViewQuestionModal=ref(false)
 const showNewQuestionModal=ref(false)
 const createdQuestion=ref(null)
 const newAnswers=ref([])
+const answers=ref([])
 const selectedAnswer=ref(null)
+const selectedQuestion=ref(null)
 let answerId =1;
 
 const createQuestion = () => {
@@ -78,6 +81,18 @@ const answerCount =  ()=>{
     }
     return false
 }
+
+const props =defineProps({
+    questions:Object,
+    error:Object
+})
+
+
+const viewQuestion = (index)=>{
+    showViewQuestionModal.value=true
+    selectedQuestion.value=props.questions[index]
+    answers.value=props.questions[index].answers
+}
 </script>
 <template>
   <Layout>
@@ -90,16 +105,20 @@ const answerCount =  ()=>{
     >
         <thead>
             <tr>
-                <th scope="col">Column 1</th>
-                <th scope="col">Column 2</th>
-                <th scope="col">Column 3</th>
+                <th style="width: 10%;" scope="col">#</th>
+                <th style="width: 70%;" scope="col">Question</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
-            <tr class="">
-                <td scope="row">R1C1</td>
-                <td>R1C2</td>
-                <td>R1C3</td>
+            <tr v-for="(question,index) in questions" :key="question.id">
+                <td scope="row">{{ index+1 }}</td>
+                <td>{{ question.question }}</td>
+                <td>
+                    <button @click="viewQuestion(index)" class="btn btn-secondary btn-sm me-1">View</button>
+                    <button class="btn btn-primary  btn-sm me-1">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
             </tr>
 
         </tbody>
@@ -156,6 +175,49 @@ const answerCount =  ()=>{
             </span>
             <button @click="destroyModal" class="btn btn-danger me-1">Close</button>
             <button v-if="newAnswers.length>3"  @click="submitQuestion" class="btn btn-success">Submit</button>
+        </template>
+    </NewQuestionModal>
+
+
+
+    <NewQuestionModal :show="showViewQuestionModal" @close="destroyModal">
+        <template #header>
+            <h5>View Question /  Answers </h5>
+        </template>
+        <template #body>
+            <p><strong>Q. {{ selectedQuestion.question }}</strong></p>
+
+            <div
+            class="table-responsive"
+           >
+            <table
+                class="table table-light"
+            >
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Answer</th>
+                        <th scope="col">Correct ?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(answer,index) in selectedQuestion.answers" :key="answer.id">
+                        <td scope="row">{{index+1}}</td>
+                        <td>
+                            <input type="text" v-model="answer.Answer" class="form-control" id="answer">
+                        </td>
+                        <td>
+                            <input type="radio" :checked="answer.correct_answer===1" :value="answer.id" @change="handleRadioToggle(answer.id)" class="form-check-input" id="radio">
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+           </div>
+        </template>
+        <template #footer>
+           <button class="btn btn-danger">Close</button>
+           <button class="btn btn-success">Save</button>
         </template>
     </NewQuestionModal>
    </Teleport>
