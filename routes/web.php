@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\QuestionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,4 +21,6 @@ Route::get('/', function () {
 });
 
 Route::get('/questions',[QuestionController::class,'index']);
+Route::put('/questions',[QuestionController::class,'update']);
 Route::post('/questions',[QuestionController::class,'store']);
+Route::put('/answers',[AnswerController::class,'update']);

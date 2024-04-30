@@ -77,7 +77,15 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Question $question)
     {
-        //
+        $question = $request->questionForEdit['question'];
+        $questionId = $request->questionForEdit['id'];
+
+        Question::where('id',$questionId)->update([
+            'question' => $question
+        ]);
+        return redirect('/questions')->with('success','Question updated successfully');
+
+
     }
 
     /**

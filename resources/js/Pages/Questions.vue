@@ -22,6 +22,8 @@ const createQuestion = () => {
 }
 const destroyModal = () =>{
     showNewQuestionModal.value=false
+    showViewQuestionModal.value=false
+    editQuestionModal.value=false
 }
 const addNewAnswer = ()=>{
     const newAnswer = {
@@ -37,6 +39,19 @@ const handleRadioToggle = (answerId)=>{
         if (answer.id===answerId) {
             answer.correct_answer=1
         }else {
+            answer.correct_answer=0
+        }
+    })
+}
+
+const selectedEditedAnswer=ref(null)
+const handleRadioChange = (answerId)=>{
+    selectedEditedAnswer.value=answerId
+
+    answers.value.forEach(answer=>{
+        if (answer.id ===  answerId) {
+                answer.correct_answer=1
+        }else{
             answer.correct_answer=0
         }
     })
@@ -93,6 +108,27 @@ const viewQuestion = (index)=>{
     selectedQuestion.value=props.questions[index]
     answers.value=props.questions[index].answers
 }
+
+const updateAnswers = ()=>{
+    router.put('/answers',{
+         answers : answers.value,
+
+    })
+}
+
+const editQuestionModal=ref(false)
+const questionForEdit =  ref(null)
+const editQuestion= (index)=>{
+    questionForEdit.value=props.questions[index]
+    // alert(index)
+
+}
+
+const updateQuestion = ()=>{
+   router.put('/questions',{
+    questionForEdit : questionForEdit.value
+   })
+}
 </script>
 <template>
   <Layout>
@@ -116,7 +152,7 @@ const viewQuestion = (index)=>{
                 <td>{{ question.question }}</td>
                 <td>
                     <button @click="viewQuestion(index)" class="btn btn-secondary btn-sm me-1">View</button>
-                    <button class="btn btn-primary  btn-sm me-1">Edit</button>
+                    <button @click="editQuestionModal=true,editQuestion(index)" class="btn btn-primary  btn-sm me-1">Edit</button>
                     <button class="btn btn-danger btn-sm">Delete</button>
                 </td>
             </tr>
@@ -125,6 +161,8 @@ const viewQuestion = (index)=>{
     </table>
    </div>
    <Teleport to="body">
+    <!-- New Question Add Modal  -->
+
     <NewQuestionModal :show="showNewQuestionModal" @close="destroyModal">
         <template #header>
             <h5>Add New Question</h5>
@@ -177,12 +215,15 @@ const viewQuestion = (index)=>{
             <button v-if="newAnswers.length>3"  @click="submitQuestion" class="btn btn-success">Submit</button>
         </template>
     </NewQuestionModal>
+ <!-- END  New Question Add Modal  -->
 
-
-
+        <!-- Answer edit & view modal  -->
     <NewQuestionModal :show="showViewQuestionModal" @close="destroyModal">
         <template #header>
             <h5>View Question /  Answers </h5>
+        </template>
+        <template #success>
+            <div v-if="success" class="alert alert-success">{{ success }}</div>
         </template>
         <template #body>
             <p><strong>Q. {{ selectedQuestion.question }}</strong></p>
@@ -207,7 +248,7 @@ const viewQuestion = (index)=>{
                             <input type="text" v-model="answer.Answer" class="form-control" id="answer">
                         </td>
                         <td>
-                            <input type="radio" :checked="answer.correct_answer===1" :value="answer.id" @change="handleRadioToggle(answer.id)" class="form-check-input" id="radio">
+                            <input type="radio" :checked="answer.correct_answer===1" :value="answer.id" @change="handleRadioChange(answer.id)" class="form-check-input" id="radio">
                         </td>
                     </tr>
 
@@ -216,10 +257,37 @@ const viewQuestion = (index)=>{
            </div>
         </template>
         <template #footer>
-           <button class="btn btn-danger">Close</button>
-           <button class="btn btn-success">Save</button>
+           <button @click="destroyModal" class="btn btn-danger">Close</button>
+           <button  @click="updateAnswers" class="btn btn-success">Save</button>
         </template>
     </NewQuestionModal>
+      <!-- end Answer edit & view modal  -->
+
+
+      <!-- Edit Question Modal  -->
+      <NewQuestionModal :show="editQuestionModal"   @close="destroyModal">
+          <template #header>
+            <h5>Edit  Question</h5>
+
+          </template>
+          <template #success>
+            <div v-if="success" class="alert alert-success">{{ success }}</div>
+          </template>
+          <template #body>
+            <div class="mb-3">
+                <form action="" class="mb-2">
+                    <label for="edit_question" class="form-label">Edit Question</label>
+                    <input type="text" class="form-control" v-model="questionForEdit.question" id="edit_question">
+                   </form>
+
+            </div>
+          </template>
+          <template #footer>
+            <button @click="editQuestionModal=false" class="btn btn-danger">Close</button>
+           <button  @click="updateQuestion" class="btn btn-success">Save</button>
+          </template>
+    </NewQuestionModal>
+      <!-- End Edit Question Modal  -->
    </Teleport>
   </Layout>
 </template>
