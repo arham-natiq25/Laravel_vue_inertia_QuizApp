@@ -129,6 +129,13 @@ const updateQuestion = ()=>{
     questionForEdit : questionForEdit.value
    })
 }
+const deleteQuestion = (questionId)=>{
+    // router.delete('/question/delete',)
+    router.on('before',()=>{
+        return confirm('You are about to delete a Record , are you sure ?')
+    })
+    router.delete('/questions/'+questionId)
+}
 </script>
 <template>
   <Layout>
@@ -153,7 +160,7 @@ const updateQuestion = ()=>{
                 <td>
                     <button @click="viewQuestion(index)" class="btn btn-secondary btn-sm me-1">View</button>
                     <button @click="editQuestionModal=true,editQuestion(index)" class="btn btn-primary  btn-sm me-1">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
+                    <button @click="deleteQuestion(question.id)" class="btn btn-danger btn-sm">Delete</button>
                 </td>
             </tr>
 
